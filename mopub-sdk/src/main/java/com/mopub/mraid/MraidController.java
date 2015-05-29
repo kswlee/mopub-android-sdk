@@ -408,7 +408,11 @@ public class MraidController {
                             @Override
                             public boolean onPreDraw() {
                                 view.getViewTreeObserver().removeOnPreDrawListener(this);
-                                countDown();
+
+                                try {
+                                    countDown();
+                                } catch (NullPointerException e) {}
+
                                 return true;
                             }
                         });
@@ -526,6 +530,11 @@ public class MraidController {
 
                         int[] location = new int[2];
                         View rootView = getRootView();
+
+                        if (null == rootView) {
+                            return;
+                        }
+
                         rootView.getLocationOnScreen(location);
                         mScreenMetrics.setRootViewPosition(location[0], location[1],
                                 rootView.getWidth(),
