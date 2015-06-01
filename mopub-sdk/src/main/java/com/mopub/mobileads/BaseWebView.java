@@ -59,7 +59,10 @@ public class BaseWebView extends WebView {
         // Even after removing from the parent, WebViewClassic can leak because of a static
         // reference from HTML5VideoViewProcessor. Removing children fixes this problem.
         removeAllViews();
-        super.destroy();
+
+        try {
+            super.destroy();
+        } catch (RuntimeException re) {}
     }
 
     @Deprecated // for testing
