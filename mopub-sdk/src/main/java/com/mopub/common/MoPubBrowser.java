@@ -340,14 +340,10 @@ public class MoPubBrowser extends Activity {
 
     @Override
     public void startActivity(Intent intent) {
-
-
         if (null == intent) {
             super.startActivity(intent);
             return;
         }
-
-        Log.i("MoPubBrowser", "intent " + intent);
 
         Uri uri = intent.getData();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
