@@ -174,7 +174,7 @@ public abstract class AdUrlGenerator extends BaseUrlGenerator {
 
     protected void setMraidFlag(boolean mraid) {
         if (mraid) {
-            addParam(IS_MRAID_KEY, "1");
+            addParam(IS_MRAID_KEY, "0");
         }
     }
 

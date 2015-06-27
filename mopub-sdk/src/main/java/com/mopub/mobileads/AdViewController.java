@@ -553,7 +553,10 @@ public class AdViewController {
                     return;
                 }
                 moPubView.removeAllViews();
-                moPubView.addView(view, getAdLayoutParams(view));
+
+                try {
+                    moPubView.addView(view, getAdLayoutParams(view));
+                } catch (Exception e) {};
             }
         });
     }

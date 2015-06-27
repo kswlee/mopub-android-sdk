@@ -3,11 +3,14 @@ package com.mopub.common;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,9 @@ import com.mopub.common.logging.MoPubLog;
 import com.mopub.mobileads.BaseWebView;
 import com.mopub.mobileads.util.WebViews;
 
+import java.util.List;
+import java.util.Locale;
+
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.mopub.common.util.Drawables.BACKGROUND;
@@ -40,6 +46,9 @@ import static com.mopub.common.util.Intents.isDeepLink;
 public class MoPubBrowser extends Activity {
     public static final String DESTINATION_URL_KEY = "URL";
     private static final int INNER_LAYOUT_ID = 1;
+
+    private static final String GP_PACKAGE_NAME = "com.android.vending";
+    private static final String ANDROID_BROWSER = "com.android.browser";
 
     private WebView mWebView;
     private ImageButton mBackButton;
@@ -216,6 +225,7 @@ public class MoPubBrowser extends Activity {
 
     private View getMoPubBrowserView() {
         LinearLayout moPubBrowserView = new LinearLayout(this);
+        moPubBrowserView.setBackgroundColor(Color.BLACK);
         LinearLayout.LayoutParams browserLayoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         moPubBrowserView.setLayoutParams(browserLayoutParams);
         moPubBrowserView.setOrientation(LinearLayout.VERTICAL);
@@ -268,5 +278,104 @@ public class MoPubBrowser extends Activity {
     @VisibleForTesting
     void setWebView(WebView webView) {
         mWebView = webView;
+    }
+
+    private List<ResolveInfo> getResolveInfo(Intent intent) {
+        PackageManager pkgMgr = getPackageManager();
+        if (null == pkgMgr) {
+            return null;
+        }
+
+        List<ResolveInfo> infos = null;
+        try {
+            infos = pkgMgr.queryIntentActivities(intent, 0);
+            if (null == infos) {
+                return null;
+            }
+        } catch (Exception e) {}
+
+        return infos;
+    }
+
+    private ResolveInfo getDefaultInfo(List<ResolveInfo> infos) {
+        if (null == infos) {
+            return null;
+        }
+
+        for (ResolveInfo info : infos) {
+            if (null != info && info.isDefault) {
+                return info;
+            }
+        }
+
+        return null;
+    }
+
+    private void updateCustomIntent(Intent intent, String defCutomPackage) {
+        List<ResolveInfo> infos = getResolveInfo(intent);
+        if (null == infos) {
+            return;
+        }
+
+        ResolveInfo defaultInfo = getDefaultInfo(infos);
+        if (null != defaultInfo) {
+            intent.setClassName(defaultInfo.activityInfo.packageName, defaultInfo.activityInfo.name);
+            return;
+        }
+
+        boolean defPkgFound = false;
+        for (ResolveInfo info : infos) {
+            if (info.activityInfo != null && info.activityInfo.packageName.equalsIgnoreCase(defCutomPackage)) {
+                intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
+                defPkgFound = true;
+                break;
+            }
+        }
+
+        if (!defPkgFound) {
+            ResolveInfo info = infos.get(0);
+            intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
+        }
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+
+
+        if (null == intent) {
+            super.startActivity(intent);
+            return;
+        }
+
+        Log.i("MoPubBrowser", "intent " + intent);
+
+        Uri uri = intent.getData();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        Intent oriIntent = new Intent(intent);
+
+        try {
+            if (uri == null || uri.toString() == null)
+                throw new Exception("null uri");
+
+            String url = uri.toString().toLowerCase(Locale.getDefault());
+            if (!intent.getAction().equals(Intent.ACTION_VIEW))
+                throw new Exception("not view action");
+
+            if (url.startsWith("http://") || url.startsWith("https://")) {
+                if (url.startsWith("https://play.google.com/store/apps/details") ||
+                        url.startsWith("http://play.google.com/store/apps/details")) {
+                    updateCustomIntent(intent, GP_PACKAGE_NAME);
+                } else {
+                    updateCustomIntent(intent, ANDROID_BROWSER);
+                }
+            } else if (url.startsWith("market://")) {
+                updateCustomIntent(intent, GP_PACKAGE_NAME);
+            }
+
+            super.startActivity(intent);
+        } catch (Exception e) {
+            super.startActivity(oriIntent);
+        }
     }
 }

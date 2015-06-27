@@ -104,7 +104,10 @@ public class MoPubView extends FrameLayout {
 
         final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
-        mContext.registerReceiver(mScreenStateReceiver, filter);
+
+        try {
+            mContext.registerReceiver(mScreenStateReceiver, filter);
+        } catch (Throwable t) {}
     }
 
     private void unregisterScreenStateBroadcastReceiver() {
