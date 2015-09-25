@@ -154,7 +154,11 @@ public class MraidActivity extends BaseInterstitialActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        broadcastAction(this, getBroadcastIdentifier(), ACTION_INTERSTITIAL_SHOW);
+
+        try {
+            broadcastAction(this, getBroadcastIdentifier(), ACTION_INTERSTITIAL_SHOW);
+        } catch (Exception e) {
+        }
 
         if (VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH) {
             getWindow().setFlags(

@@ -85,17 +85,17 @@ public class MoPubCustomEventNative extends CustomEventNative {
                 }
             }
 
-            preCacheImages(mContext, getAllImageUrls(), new ImageListener() {
-                @Override
-                public void onImagesCached() {
-                    mCustomEventNativeListener.onNativeAdLoaded(MoPubForwardingNativeAd.this);
-                }
-
-                @Override
-                public void onImagesFailedToCache(final NativeErrorCode errorCode) {
-                    mCustomEventNativeListener.onNativeAdFailed(errorCode);
-                }
-            });
+//            preCacheImages(mContext, getAllImageUrls(), new ImageListener() {
+//                @Override
+//                public void onImagesCached() {
+//                    mCustomEventNativeListener.onNativeAdLoaded(MoPubForwardingNativeAd.this);
+//                }
+//
+//                @Override
+//                public void onImagesFailedToCache(final NativeErrorCode errorCode) {
+//                    mCustomEventNativeListener.onNativeAdFailed(errorCode);
+//                }
+//            });
         }
 
         private boolean containsRequiredKeys(@NonNull final JSONObject jsonObject) {

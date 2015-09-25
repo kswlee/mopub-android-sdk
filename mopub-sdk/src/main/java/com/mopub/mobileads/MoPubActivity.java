@@ -112,14 +112,21 @@ public class MoPubActivity extends BaseInterstitialActivity {
             requestedOrientation = (CreativeOrientation) orientationExtra;
         }
         DeviceUtils.lockOrientation(this, requestedOrientation);
-        broadcastAction(this, getBroadcastIdentifier(), ACTION_INTERSTITIAL_SHOW);
+
+        try {
+            broadcastAction(this, getBroadcastIdentifier(), ACTION_INTERSTITIAL_SHOW);
+        } catch (Exception e) {}
     }
 
     @Override
     protected void onDestroy() {
         mHtmlInterstitialWebView.loadUrl(WEB_VIEW_DID_CLOSE.getUrl());
         mHtmlInterstitialWebView.destroy();
-        broadcastAction(this, getBroadcastIdentifier(), ACTION_INTERSTITIAL_DISMISS);
+        try {
+            broadcastAction(this, getBroadcastIdentifier(), ACTION_INTERSTITIAL_DISMISS);
+        } catch (Exception e) {
+
+        }
         super.onDestroy();
     }
 

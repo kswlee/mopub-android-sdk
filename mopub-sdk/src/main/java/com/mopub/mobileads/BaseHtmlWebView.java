@@ -40,10 +40,13 @@ public class BaseHtmlWebView extends BaseWebView implements UserClickListener {
     public void loadUrl(String url) {
         if (url == null) return;
 
-        MoPubLog.d("Loading url: " + url);
-        if (url.startsWith("javascript:")) {
-            super.loadUrl(url);
-        }
+         try {
+            MoPubLog.d("Loading url: " + url);
+            if (url.startsWith("javascript:")) {
+                super.loadUrl(url);
+            }
+         } catch (Exception e) {
+         }
     }
 
     private void disableScrollingAndZoom() {
