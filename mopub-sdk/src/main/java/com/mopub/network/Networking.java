@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.LruCache;
+import android.text.TextUtils;
 import android.webkit.WebView;
 
 import com.mopub.common.ClientMetadata;
@@ -62,8 +63,13 @@ public class Networking {
                     HttpStack httpStack = new RequestQueueHttpStack(userAgent, urlRewriter, socketFactory);
 
                     Network network = new BasicNetwork(httpStack);
-                    File volleyCacheDir = new File(context.getCacheDir().getPath() + File.separator
-                            + CACHE_DIRECTORY_NAME);
+                    File cacheFile = context.getCacheDir();
+                    String filePath = cacheFile != null ? cacheFile.getPath() + File.separator : "";
+                    if(TextUtils.isEmpty(filePath)){
+                        File temp = context.getDir("mopub_cache", Context.MODE_PRIVATE);
+                        filePath = temp.getPath() + File.separator;
+                    }
+                    File volleyCacheDir = new File(filePath + CACHE_DIRECTORY_NAME);
                     Cache cache = new DiskBasedCache(volleyCacheDir, (int) DeviceUtils.diskCacheSizeBytes(volleyCacheDir, Constants.TEN_MB));
                     requestQueue = new MoPubRequestQueue(cache, network);
                     sRequestQueue = requestQueue;
