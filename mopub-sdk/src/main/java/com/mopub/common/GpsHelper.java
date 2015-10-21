@@ -112,7 +112,8 @@ public class GpsHelper {
         }
 
         try {
-            AsyncTasks.safeExecuteOnExecutor(new FetchAdvertisingInfoTask(context, gpsHelperListener));
+            // AsyncTasks.safeExecuteOnExecutor(new FetchAdvertisingInfoTask(context, gpsHelperListener));
+            new FetchAdvertisingInfoTask(context, gpsHelperListener).execute(null, null, null);
         } catch (Exception exception) {
             MoPubLog.d("Error executing FetchAdvertisingInfoTask", exception);
 

@@ -96,6 +96,8 @@ public class MoPubCustomEventNative extends CustomEventNative {
 //                    mCustomEventNativeListener.onNativeAdFailed(errorCode);
 //                }
 //            });
+
+            mCustomEventNativeListener.onNativeAdLoaded(MoPubForwardingNativeAd.this);
         }
 
         private boolean containsRequiredKeys(@NonNull final JSONObject jsonObject) {

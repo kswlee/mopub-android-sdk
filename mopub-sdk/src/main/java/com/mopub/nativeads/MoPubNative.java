@@ -195,7 +195,7 @@ public class MoPubNative {
         final String endpointUrl = generator.generateUrlString(Constants.HOST);
 
         if (endpointUrl != null) {
-            MoPubLog.d("Loading ad from: " + endpointUrl);
+            MoPubLog.d("Loading ad from aaaa: " + endpointUrl);
         }
 
         requestNativeAd(endpointUrl);
@@ -204,10 +204,12 @@ public class MoPubNative {
     void requestNativeAd(@Nullable final String endpointUrl) {
         final Context context = getContextOrDestroy();
         if (context == null) {
+            MoPubLog.d("context " + context);
             return;
         }
 
         if (endpointUrl == null) {
+            MoPubLog.d("requestNativeAd onNativeFail ");
             mMoPubNativeNetworkListener.onNativeFail(INVALID_REQUEST_URL);
             return;
         }

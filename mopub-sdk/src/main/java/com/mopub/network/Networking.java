@@ -2,6 +2,7 @@ package com.mopub.network;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.mopub.volley.toolbox.HurlStack;
 import com.mopub.volley.toolbox.ImageLoader;
 
 import java.io.File;
+import java.util.Locale;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -133,13 +135,14 @@ public class Networking {
             synchronized (Networking.class) {
                 userAgent = sUserAgent;
                 if (userAgent == null) {
-                    // As of Android 4.4, WebViews may only be instantiated on the UI thread
-                    if (Looper.myLooper() == Looper.getMainLooper()) {
-                        userAgent = new WebView(context).getSettings().getUserAgentString();
-                    } else {
+                    {
                         // In the exceptional case where we can't access the WebView user agent,
                         // fall back to the System-specific user agent.
-                        userAgent = System.getProperty("http.agent");
+
+                        userAgent = getUserAgentStringHack(context);
+                        if (TextUtils.isEmpty(userAgent)) {
+                            userAgent = System.getProperty("http.agent");
+                        }
                     }
                     sUserAgent = userAgent;
                 }
@@ -147,6 +150,22 @@ public class Networking {
         }
 
         return userAgent;
+    }
+
+    private static String getUserAgentStringHack(Context context) {
+        if(context == null)
+            return null;
+
+        String ua = null;
+        Locale locale = Locale.getDefault();
+
+        try {
+            ua = (String) ReflectionUtils.Hack("android.webkit.WebSettingsClassic")
+                    .call2("getDefaultUserAgentForLocale", Context.class, context, Locale.class, locale);
+        } catch (ReflectionUtils.ReflectionException e) {
+        }
+
+        return ua;
     }
 
     @VisibleForTesting
