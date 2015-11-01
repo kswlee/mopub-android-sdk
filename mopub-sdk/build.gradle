@@ -41,6 +41,11 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
+
     // Note: You will also need a local.properties file to set the location of the SDK in the same 
     // way that the existing SDK requires, using the sdk.dir property.
     // Alternatively, you can set an environment variable called ANDROID_HOME. There is no 

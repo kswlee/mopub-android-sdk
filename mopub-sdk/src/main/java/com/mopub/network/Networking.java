@@ -1,5 +1,6 @@
 package com.mopub.network;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -8,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.LruCache;
 import android.text.TextUtils;
+import android.util.Log;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.mopub.common.ClientMetadata;
@@ -160,8 +163,12 @@ public class Networking {
         Locale locale = Locale.getDefault();
 
         try {
-            ua = (String) ReflectionUtils.Hack("android.webkit.WebSettingsClassic")
-                    .call2("getDefaultUserAgentForLocale", Context.class, context, Locale.class, locale);
+            if (Build.VERSION.SDK_INT > 17) {
+                ua = WebSettings.getDefaultUserAgent(context);
+            } else {
+                ua = (String) ReflectionUtils.Hack("android.webkit.WebSettingsClassic")
+                        .call2("getDefaultUserAgentForLocale", Context.class, context, Locale.class, locale);
+            }
         } catch (ReflectionUtils.ReflectionException e) {
         }
 
