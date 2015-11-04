@@ -278,7 +278,9 @@ public class MraidBridge {
 
         @Override
         public void onPageFinished(@NonNull WebView view, @NonNull String url) {
-            handlePageFinished();
+            try {
+                handlePageFinished();
+            } catch (Exception e) {}
         }
     };
 
