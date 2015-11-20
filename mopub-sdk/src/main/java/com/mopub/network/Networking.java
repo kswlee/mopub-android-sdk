@@ -75,7 +75,7 @@ public class Networking {
                         filePath = temp.getPath() + File.separator;
                     }
                     File volleyCacheDir = new File(filePath + CACHE_DIRECTORY_NAME);
-                    Cache cache = new DiskBasedCache(volleyCacheDir, (int) DeviceUtils.diskCacheSizeBytes(volleyCacheDir, Constants.TEN_MB));
+                    Cache cache = new DiskBasedCache(volleyCacheDir, (int) DeviceUtils.diskCacheSizeBytes(volleyCacheDir, Constants.ONE_MB));
                     requestQueue = new MoPubRequestQueue(cache, network);
                     sRequestQueue = requestQueue;
                     requestQueue.start();

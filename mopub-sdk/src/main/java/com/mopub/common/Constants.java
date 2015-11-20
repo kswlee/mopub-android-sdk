@@ -16,5 +16,6 @@ public class Constants {
     public static final int TEN_SECONDS_MILLIS = 10 * 1000;
     public static final int THIRTY_SECONDS_MILLIS = 30 * 1000;
 
-    public static final int TEN_MB = 10 * 1024 * 1024;
+    public static final int ONE_MB = 1024 * 1024;
+    public static final int TEN_P_MB = 10 * ONE_MB;
 }
